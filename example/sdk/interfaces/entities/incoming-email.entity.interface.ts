@@ -1,5 +1,5 @@
 export interface IIncomingEmail {
-    id: string;
-    from: string;
-    subject: string;
+  id: string;
+  from: string;
+  subject: string;
 }

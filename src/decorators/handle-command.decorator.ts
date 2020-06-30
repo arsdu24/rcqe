@@ -6,51 +6,52 @@ import { MessagePattern } from '@nestjs/microservices';
 import { IRCommandQEHandler } from '../rcqe.command-handler';
 import { RCQEController } from '../rcqe.controller';
 
-export function HandleCommand<C extends RCommandQE<T>, T extends object | void = RCommandQEReturnType<C>>(command: Class<C>) {
-    return <H extends IRCommandQEHandler<any>>(target: Class<H>) => {
-      let instance: any;
-      const handleMethod: string = 'execute'
-      const commandLabel: string = (command as any).getLabel();
+export function HandleCommand<
+  C extends RCommandQE<T>,
+  T extends object | void = RCommandQEReturnType<C>
+>(command: Class<C>) {
+  return <H extends IRCommandQEHandler<any>>(target: Class<H>) => {
+    let instance: any;
+    const handleMethod: string = 'execute';
+    const commandLabel: string = (command as any).getLabel();
 
-      CommandHandler(command)(target);
+    CommandHandler(command)(target);
 
-      Object.defineProperty(RCQEController.prototype, commandLabel, {
-        value: (...args: any[]) => {
-          if (instance) {
-            return instance[handleMethod](...args)
-          }
-        },
-        configurable: false,
-        writable: false
-      })
-
-      const descriptor: TypedPropertyDescriptor<any> = Object.getOwnPropertyDescriptor(RCQEController.prototype, commandLabel) || {}
-      const metadataKey = 'design:paramtypes';
-
-      Reflect.defineMetadata(
-        metadataKey,
-        Reflect.getMetadata(
-          metadataKey,
-          target.prototype,
-          handleMethod
-        ),
-        RCQEController.prototype,
-        commandLabel
-      )
-
-      MessagePattern(commandLabel)(
-        RCQEController.prototype,
-        commandLabel,
-        descriptor
-      );
-
-      // @ts-ignore
-      return class extends target {
-        constructor(...args: any[]) {
-          super(...args);
-
-          instance = this;
+    Object.defineProperty(RCQEController.prototype, commandLabel, {
+      value: (...args: any[]) => {
+        if (instance) {
+          return instance[handleMethod](...args);
         }
+      },
+      configurable: false,
+      writable: false,
+    });
+
+    const descriptor: TypedPropertyDescriptor<any> =
+      Object.getOwnPropertyDescriptor(RCQEController.prototype, commandLabel) ||
+      {};
+    const metadataKey = 'design:paramtypes';
+
+    Reflect.defineMetadata(
+      metadataKey,
+      Reflect.getMetadata(metadataKey, target.prototype, handleMethod),
+      RCQEController.prototype,
+      commandLabel,
+    );
+
+    MessagePattern(commandLabel)(
+      RCQEController.prototype,
+      commandLabel,
+      descriptor,
+    );
+
+    // @ts-ignore
+    return class extends target {
+      constructor(...args: any[]) {
+        super(...args);
+
+        instance = this;
       }
-    }
+    };
+  };
 }

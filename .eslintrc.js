@@ -17,6 +17,7 @@ module.exports = {
     jest: true,
   },
   rules: {
+    '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',

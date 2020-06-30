@@ -7,22 +7,24 @@ import { RCQEService } from '../../src';
 
 @Controller()
 export class UserController {
-    constructor(
-        private readonly rcqeService: RCQEService
-    ) {}
+  constructor(private readonly rcqeService: RCQEService) {}
 
-    @Get('admin')
-    async getAdminUsers(limit: number = 12, skip: number = 0): Promise<IUser[]> {
-        return this.rcqeService.ask(new AdminUsersQuery(limit, skip));
-    }
+  @Get('admin')
+  async getAdminUsers(limit: number = 12, skip: number = 0): Promise<IUser[]> {
+    return this.rcqeService.ask(new AdminUsersQuery(limit, skip));
+  }
 
-    @Get('create')
-    async createUser(plain: ICreateUser = { password: 'pass', login: 'email' }): Promise<IUser> {
-        return this.rcqeService.exec(new CreateUserCommand(plain))
-    }
+  @Get('create')
+  async createUser(
+    plain: ICreateUser = { password: 'pass', login: 'email' },
+  ): Promise<IUser> {
+    return this.rcqeService.exec(new CreateUserCommand(plain));
+  }
 
-    @Get('email')
-    async emitIncomingEmail(email: IIncomingEmail = { id: 'D', from: 'Q', subject: 'S' }): Promise<void> {
-        return this.rcqeService.emit(new IncomingEmailEvent(email))
-    }
+  @Get('email')
+  async emitIncomingEmail(
+    email: IIncomingEmail = { id: 'D', from: 'Q', subject: 'S' },
+  ): Promise<void> {
+    return this.rcqeService.emit(new IncomingEmailEvent(email));
+  }
 }
