@@ -1,6 +1,6 @@
 {
   "name": "@rcqe/nest",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "arsdu24",
   "license": "ISC",
   "description": "Rabbit CQRS Nest Module",
